@@ -129,4 +129,3 @@ docker exec -it cnback sh
 ls /storage/mongo-test
 mongorestore --gzip --archive=/storage/mongo-test/mongo-test-1494056760.gz --host mongohost:27017 --drop
 ```
-# cnback
