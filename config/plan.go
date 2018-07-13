@@ -15,19 +15,27 @@ type Plan struct {
 	Source    Database  `yaml:"source"`
 	Scheduler Scheduler `yaml:"scheduler"`
 	Store     Store     `yaml:"stores"`
-  Notifier  Notifier  `yaml:"notifier"`
+	Notifier  Notifier  `yaml:"notifier"`
+}
+
+type S3 struct {
+	Bucket    string `yaml:"bucket"`
+	AccessKey string `yaml:"accessKey"`
+	API       string `yaml:"api"`
+	SecretKey string `yaml:"secretKey"`
+	URL       string `yaml:"url"`
 }
 
 type Store struct {
-  Local     *Local    `yaml:"local"`
-	S3        *S3       `yaml:"s3"`
-	GCloud    *GCloud   `yaml:"gcloud"`
-	SFTP      *SFTP     `yaml:"sftp"`
+	Local  *Local  `yaml:"local"`
+	S3     *S3     `yaml:"s3"`
+	GCloud *GCloud `yaml:"gcloud"`
+	SFTP   *SFTP   `yaml:"sftp"`
 }
 
 type Notifier struct {
-	SMTP      *SMTP     `yaml:"smtp"`
-	Slack     *Slack    `yaml:"slack"`
+	SMTP  *SMTP  `yaml:"smtp"`
+	Slack *Slack `yaml:"slack"`
 }
 
 type Database struct {
@@ -47,14 +55,6 @@ type Scheduler struct {
 
 type Local struct {
 	StoragePath string `json:"storage_path"`
-}
-
-type S3 struct {
-	Bucket    string `yaml:"bucket"`
-	AccessKey string `yaml:"accessKey"`
-	API       string `yaml:"api"`
-	SecretKey string `yaml:"secretKey"`
-	URL       string `yaml:"url"`
 }
 
 type GCloud struct {

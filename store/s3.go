@@ -1,4 +1,4 @@
-package backup
+package store
 
 import (
 	"fmt"
@@ -9,6 +9,10 @@ import (
 	"github.com/jstoja/cnback/config"
 	"github.com/pkg/errors"
 )
+
+func (s config.S3) Close() error {}
+func (s config.S3) Write(p []byte) (n int, err error) {
+}
 
 func s3Upload(file string, plan config.Plan) (string, error) {
 

@@ -8,27 +8,24 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/jstoja/cnback/config"
 	"github.com/jstoja/cnback/db"
-	"github.com/jstoja/cnback/metrics"
 	"github.com/jstoja/cnback/notifier"
 	"github.com/pkg/errors"
 	"github.com/robfig/cron"
 )
 
 type Scheduler struct {
-	Cron    *cron.Cron
-	Plans   []config.Plan
-	Config  *config.AppConfig
-	Stats   *db.StatusStore
-	metrics *metrics.BackupMetrics
+	Cron   *cron.Cron
+	Plans  []config.Plan
+	Config *config.AppConfig
+	Stats  *db.StatusStore
 }
 
 func New(plans []config.Plan, conf *config.AppConfig, stats *db.StatusStore) *Scheduler {
 	s := &Scheduler{
-		Cron:    cron.New(),
-		Plans:   plans,
-		Config:  conf,
-		Stats:   stats,
-		metrics: metrics.New("mgob", "scheduler"),
+		Cron:   cron.New(),
+		Plans:  plans,
+		Config: conf,
+		Stats:  stats,
 	}
 
 	return s
@@ -40,7 +37,7 @@ func (s *Scheduler) Start() error {
 		if err != nil {
 			return errors.Wrapf(err, "Invalid cron %v for plan %v", plan.Scheduler.Cron, plan.Name)
 		}
-		s.Cron.Schedule(schedule, backupJob{plan.Name, plan, s.Config, s.Stats, s.metrics, s.Cron})
+		s.Cron.Schedule(schedule, backupJob{plan.Name, plan, s.Config, s.Stats, s.Cron})
 	}
 
 	// TODO: Shouldn't be here
@@ -71,12 +68,11 @@ func (s *Scheduler) Start() error {
 }
 
 type backupJob struct {
-	name    string
-	plan    config.Plan
-	conf    *config.AppConfig
-	stats   *db.StatusStore
-	metrics *metrics.BackupMetrics
-	cron    *cron.Cron
+	name  string
+	plan  config.Plan
+	conf  *config.AppConfig
+	stats *db.StatusStore
+	cron  *cron.Cron
 }
 
 func (b backupJob) Run() {
@@ -115,8 +111,6 @@ func (b backupJob) Run() {
 	}
 
 	t2 := time.Now()
-	b.metrics.Total.WithLabelValues(b.plan.Name, status).Inc()
-	b.metrics.Latency.WithLabelValues(b.plan.Name, status).Observe(t2.Sub(t1).Seconds())
 
 	s := &db.Status{
 		LastRun:       &res.Timestamp,
