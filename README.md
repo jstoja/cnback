@@ -7,20 +7,20 @@ CNback is a cloud native backup automation tool built with golang.
 
 #### Features
 
-* schedule backups with cron-style parameter
-[] multi source database
-  [] mysql
-  [] mongodb
-  [] postgres
-[] multi storage destination
-  [] local backups retention
-  [] upload to S3 Object Storage (Minio, AWS, Google Cloud)
-  [] upload to gcloud storage
-  [] upload to SFTP
-[] multi notification platforms
-  [] emails
-  [] slack
-[] distributed as an Alpine Docker image
+- [x] schedule backups with cron-style parameter
+- [ ] multi source database
+  - [ ] mysql
+  - [ ] mongodb
+  - [ ] postgres
+- [ ] multi storage destination
+  - [ ] local backups retention
+  - [ ] upload to S3 Object Storage (Minio, AWS, Google Cloud)
+  - [ ] upload to gcloud storage
+  - [ ] upload to SFTP
+- [ ] multi notification platforms
+  - [ ] emails
+  - [ ] slack
+- [ ] distributed as an Alpine Docker image
 
 #### Install
 
