@@ -1,6 +1,7 @@
 # cnback
 
-Originally from https://github.com/stefanprodan/mgob
+*This project is currently not production ready. If you still want to use it, it's to your own riscs and perils.
+Originally from https://github.com/stefanprodan/mgob*
 
 CNback is a cloud native backup automation tool built with golang.
 
