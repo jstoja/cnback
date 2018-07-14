@@ -5,3 +5,6 @@
 ** add back timeout of backup (how to handle with stream?)
 ** add back error handling
 * add encyption (another PR ?)
+* add k/v config fetch
+* add hashicorp vault impl to fetch secrets
+* add config to check if connection to DB is possible (before waiting for the cron to tell you so...)

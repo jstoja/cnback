@@ -1,12 +1,12 @@
 package scheduler
 
 import (
-	"fmt"
-	"io"
-	"os/exec"
-	"time"
+	//"fmt"
+  "io"
+	//"os/exec"
+	//"time"
 
-	"github.com/Sirupsen/logrus"
+	//"github.com/Sirupsen/logrus"
 	"github.com/jstoja/cnback/config"
 )
 
@@ -20,10 +20,12 @@ func sendBackup(backupStream io.ReadCloser) error {
 	return nil
 }
 
-func Run(plan config.Plan) (Result, error) {
+func backup(plan config.Plan) (Result, error) {
 
 	backupStream := fetchBackup()
-	err := sendBackup(backupStream)
+  err := sendBackup(backupStream)
+  if err != nil {
+  }
 
 	// TODO: Implement timeouts
 	// 1. run the backup
@@ -88,5 +90,5 @@ func Run(plan config.Plan) (Result, error) {
 	//t2 := time.Now()
 	//res.Status = 200
 	//res.Duration = t2.Sub(ts)
-	//return res, nil
+	return Result{}, nil
 }

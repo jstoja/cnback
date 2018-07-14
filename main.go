@@ -20,30 +20,27 @@ func main() {
 	flag.StringVar(&appConfig.LogLevel, "LogLevel", "debug", "logging threshold level: debug|info|warn|error|fatal|panic")
 	flag.IntVar(&appConfig.Port, "Port", 8090, "HTTP port to listen on")
 	flag.StringVar(&appConfig.ConfigPath, "ConfigPath", "/config", "plan yml files dir")
-	flag.StringVar(&appConfig.StoragePath, "StoragePath", "/storage", "backup storage")
-	flag.StringVar(&appConfig.TmpPath, "TmpPath", "/tmp", "temporary backup storage")
-	flag.StringVar(&appConfig.DataPath, "DataPath", "/data", "db dir")
 	flag.Parse()
 	setLogLevel(appConfig.LogLevel)
 	logrus.Infof("Starting with config: %+v", appConfig)
 
-	info, err := backup.CheckMongodump()
-	if err != nil {
-		logrus.Fatal(err)
-	}
-	logrus.Info(info)
+	//info, err := backup.CheckMongodump()
+	//if err != nil {
+	//	logrus.Fatal(err)
+	//}
+	//logrus.Info(info)
 
-	info, err = backup.CheckMinioClient()
-	if err != nil {
-		logrus.Fatal(err)
-	}
-	logrus.Info(info)
+	//info, err = backup.CheckMinioClient()
+	//if err != nil {
+	//	logrus.Fatal(err)
+	//}
+	//logrus.Info(info)
 
-	info, err = backup.CheckGCloudClient()
-	if err != nil {
-		logrus.Fatal(err)
-	}
-	logrus.Info(info)
+	//info, err = backup.CheckGCloudClient()
+	//if err != nil {
+	//	logrus.Fatal(err)
+	//}
+	//logrus.Info(info)
 
 	plans, err := config.LoadPlans(appConfig.ConfigPath)
 	if err != nil {
@@ -60,13 +57,6 @@ func main() {
 	}
 	sch := scheduler.New(plans, appConfig, statusStore)
 	sch.Start()
-
-	server := &api.HttpServer{
-		Config: appConfig,
-		Stats:  statusStore,
-	}
-	logrus.Infof("Starting HTTP server on port %v", appConfig.Port)
-	go server.Start(version)
 
 	//wait for SIGINT (Ctrl+C) or SIGTERM (docker stop)
 	sigChan := make(chan os.Signal, 1)
