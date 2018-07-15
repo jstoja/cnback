@@ -4,12 +4,10 @@ import (
 	"flag"
 	"os"
 	"os/signal"
-	"path"
 	"syscall"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/jstoja/cnback/config"
-	"github.com/jstoja/cnback/db"
 	"github.com/jstoja/cnback/scheduler"
 )
 
@@ -47,15 +45,15 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	store, err := db.Open(path.Join(appConfig.DataPath, "mgob.db"))
-	if err != nil {
-		logrus.Fatal(err)
-	}
-	statusStore, err := db.NewStatusStore(store)
-	if err != nil {
-		logrus.Fatal(err)
-	}
-	sch := scheduler.New(plans, appConfig, statusStore)
+	//store, err := db.Open(path.Join(appConfig.DataPath, "mgob.db"))
+	//if err != nil {
+	//	logrus.Fatal(err)
+	//}
+	//statusStore, err := db.NewStatusStore(store)
+	//if err != nil {
+	//	logrus.Fatal(err)
+	//}
+	sch := scheduler.New(plans, appConfig, nil)
 	sch.Start()
 
 	//wait for SIGINT (Ctrl+C) or SIGTERM (docker stop)

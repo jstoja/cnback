@@ -12,7 +12,7 @@ import (
 
 type Plan struct {
 	Name      string    `yaml:"name"`
-	Source    Database  `yaml:"source"`
+	MongoDB   *MongoDB  `yaml:"mongodb"`
 	Scheduler Scheduler `yaml:"scheduler"`
 	Store     Store     `yaml:"stores"`
 	Notifier  Notifier  `yaml:"notifier"`
@@ -38,7 +38,7 @@ type Notifier struct {
 	Slack *Slack `yaml:"slack"`
 }
 
-type Database struct {
+type MongoDB struct {
 	Database string `yaml:"database"`
 	Host     string `yaml:"host"`
 	Password string `yaml:"password"`

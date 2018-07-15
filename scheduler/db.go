@@ -1,4 +1,4 @@
-package db
+package scheduler
 
 import (
 	"time"

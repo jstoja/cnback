@@ -5,7 +5,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/codeskyblue/go-sh"
@@ -13,47 +12,42 @@ import (
 	"github.com/pkg/errors"
 )
 
-func dump(archive io.ReadCloser, plan config.Plan, planDir string) (Result, error) {
+func dump(archive io.ReadCloser, plan config.Plan, planDir string) (string, error) {
 	ts := time.Now()
-	res := Result{
-		Plan:      plan.Name,
-		Timestamp: ts.UTC(),
-		Status:    500,
-	}
 
 	err := sh.Command("mkdir", "-p", planDir).Run()
 	if err != nil {
-		return res, errors.Wrapf(err, "creating dir %v in %v failed", plan.Name, plan.Local.StoragePath)
+		return "", errors.Wrapf(err, "creating dir %v in %v failed", plan.Name, plan.Store.Local.StoragePath)
 	}
 
 	archivePath := fmt.Sprintf("%v/%v-%v.gz", planDir, plan.Name, ts.Unix())
 	f, err := os.Create(archivePath)
 	bytesWritten, err := io.Copy(f, archive)
 	if err != nil {
-		return res, errors.Wrapf(err, "piping to file %v failed", archivePath)
+		return "", errors.Wrapf(err, "piping to file %v failed", archivePath)
 	}
 
 	fi, err := os.Stat(archivePath)
 	if err != nil {
-		return res, errors.Wrapf(err, "stat file %v failed", archivePath)
+		return "", errors.Wrapf(err, "stat file %v failed", archivePath)
 	}
-	_, res.Name = filepath.Split(archivePath)
+	//_, res.Name = filepath.Split(archivePath)
 	if bytesWritten != fi.Size() {
-		return res, errors.Wrapf(err, "different size read and saved on disk %v vs %v", bytesWritten, fi.Size())
+		return "", errors.Wrapf(err, "different size read and saved on disk %v vs %v", bytesWritten, fi.Size())
 	}
-	res.Size = fi.Size()
+	//res.Size = fi.Size()
 
 	// TODO: Add stderr logging in file + move to planDir
 
 	if plan.Scheduler.Retention > 0 {
 		err = applyRetention(planDir, plan.Scheduler.Retention)
 		if err != nil {
-			return res, errors.Wrap(err, "retention job failed")
+			return "", errors.Wrap(err, "retention job failed")
 		}
 	}
 
 	//file := filepath.Join(planDir, res.Name)
-	return res, nil
+	return "", nil
 }
 
 func logToFile(file string, data []byte) error {

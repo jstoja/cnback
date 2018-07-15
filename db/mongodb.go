@@ -7,19 +7,19 @@ import (
 	"os/exec"
 )
 
-func backup(plan config.Plan) (io.ReadCloser, io.ReadCloser, error) {
-	dump := fmt.Sprintf("mongodump --archive --gzip --host %v --port %v ", plan.Source.Host, plan.Source.Port)
-	if plan.Source.Database != "" {
-		dump += fmt.Sprintf("--db %v ", plan.Source.Database)
+func backupMongodb(config config.MongoDB) (io.ReadCloser, io.ReadCloser, error) {
+	args := fmt.Sprintf("--archive --gzip --host %v --port %v ", config.Host, config.Port)
+	if config.Database != "" {
+		args += fmt.Sprintf("--db %v ", config.Database)
 	}
-	if plan.Source.Username != "" && plan.Source.Password != "" {
-		dump += fmt.Sprintf("-u %v -p %v ", plan.Source.Username, plan.Source.Password)
+	if config.Username != "" && config.Password != "" {
+		args += fmt.Sprintf("-u %v -p %v ", config.Username, config.Password)
 	}
-	if plan.Source.Params != "" {
-		dump += fmt.Sprintf("%v", plan.Source.Params)
+	if config.Params != "" {
+		args += fmt.Sprintf("%v", config.Params)
 	}
 
-	cmd := exec.Command("/bin/sh", "-c", dump)
+	cmd := exec.Command("mongodump", args)
 	cmd.Start()
 
 	out2, err := cmd.StderrPipe()
@@ -28,7 +28,7 @@ func backup(plan config.Plan) (io.ReadCloser, io.ReadCloser, error) {
 	}
 	out1, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, out1, err
+		return out1, out2, err
 	}
 
 	return out1, out2, nil

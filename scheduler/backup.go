@@ -2,28 +2,22 @@ package scheduler
 
 import (
 	//"fmt"
-  "io"
+  //"io"
 	//"os/exec"
 	//"time"
 
 	//"github.com/Sirupsen/logrus"
 	"github.com/jstoja/cnback/config"
+	"github.com/jstoja/cnback/db"
+	"github.com/jstoja/cnback/store"
 )
 
-type Result struct{}
+type Result struct {}
 
-func fetchBackup() io.ReadCloser {
-	return nil
-}
+func backup(plan config.Plan) (*string, error) {
 
-func sendBackup(backupStream io.ReadCloser) error {
-	return nil
-}
-
-func backup(plan config.Plan) (Result, error) {
-
-	backupStream := fetchBackup()
-  err := sendBackup(backupStream)
+	backupStream, _ := db.FetchBackup(plan)
+  err := store.SendBackup(backupStream)
   if err != nil {
   }
 
@@ -90,5 +84,5 @@ func backup(plan config.Plan) (Result, error) {
 	//t2 := time.Now()
 	//res.Status = 200
 	//res.Duration = t2.Sub(ts)
-	return Result{}, nil
+	return nil, nil
 }

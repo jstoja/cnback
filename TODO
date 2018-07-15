@@ -1,10 +1,11 @@
 * migrate backup 1 -> * outputs
-** use local as type of backup destination ( https://github.com/stefanprodan/mgob/issues/15#issuecomment-404805893 )
-** implement dump with logging (meaning local dump)
-** use io streams instead of file names
-** add back timeout of backup (how to handle with stream?)
-** add back error handling
-* add encyption (another PR ?)
-* add k/v config fetch
-* add hashicorp vault impl to fetch secrets
-* add config to check if connection to DB is possible (before waiting for the cron to tell you so...)
+** local as type of backup destination ( https://github.com/stefanprodan/mgob/issues/15#issuecomment-404805893 )
+** dump with logging (meaning local dump)
+** io streams instead of file names
+** back timeout of backup (how to handle with stream?)
+** back error handling
+* encyption (another PR ?)
+* k/v config fetch
+* hashicorp vault impl to fetch secrets
+* config to check if connection to DB is possible (before waiting for the cron to tell you so...)
+* warning if multi-source plan

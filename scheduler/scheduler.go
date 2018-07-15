@@ -5,7 +5,6 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/jstoja/cnback/config"
-	"github.com/jstoja/cnback/db"
 	"github.com/jstoja/cnback/notifier"
 	"github.com/pkg/errors"
 	"github.com/robfig/cron"
@@ -15,10 +14,10 @@ type Scheduler struct {
 	Cron   *cron.Cron
 	Plans  []config.Plan
 	Config *config.AppConfig
-	Stats  *db.StatusStore
+	Stats  *StatusStore
 }
 
-func New(plans []config.Plan, conf *config.AppConfig, stats *db.StatusStore) *Scheduler {
+func New(plans []config.Plan, conf *config.AppConfig, stats *StatusStore) *Scheduler {
 	return &Scheduler{
 		Cron:   cron.New(),
 		Plans:  plans,
@@ -42,11 +41,11 @@ func (s *Scheduler) Start() error {
 	//})
 
 	s.Cron.Start()
-	stats := make([]*db.Status, 0)
+	stats := make([]*Status, 0)
 	for _, e := range s.Cron.Entries() {
 		switch e.Job.(type) {
 		case backupJob:
-			status := &db.Status{
+			status := &Status{
 				Plan:    e.Job.(backupJob).name,
 				NextRun: e.Next,
 			}
@@ -67,7 +66,7 @@ type backupJob struct {
 	name  string
 	plan  config.Plan
 	conf  *config.AppConfig
-	stats *db.StatusStore
+	stats *StatusStore
 	cron  *cron.Cron
 }
 
