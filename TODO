@@ -1,4 +1,6 @@
+* launch without schedule (so it can be used as a timely manner, but also with k8s cronjobs)
 * migrate backup 1 -> * outputs
+** mongodb backup with mongo tools import (https://github.com/mongodb/mongo-tools/tree/master/mongodump)
 ** local as type of backup destination ( https://github.com/stefanprodan/mgob/issues/15#issuecomment-404805893 )
 ** dump with logging (meaning local dump)
 ** io streams instead of file names

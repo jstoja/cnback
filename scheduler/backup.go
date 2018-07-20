@@ -2,11 +2,9 @@ package scheduler
 
 import (
 	//"fmt"
-  //"io"
-	//"os/exec"
 	//"time"
 
-	//"github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 	"github.com/jstoja/cnback/config"
 	"github.com/jstoja/cnback/db"
 	"github.com/jstoja/cnback/store"
@@ -16,6 +14,7 @@ type Result struct {}
 
 func backup(plan config.Plan) (*string, error) {
 
+  logrus.Info("Launching specific backup")
 	backupStream, _ := db.FetchBackup(plan)
   err := store.SendBackup(backupStream)
   if err != nil {

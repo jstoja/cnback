@@ -26,14 +26,25 @@ func New(plans []config.Plan, conf *config.AppConfig, stats *StatusStore) *Sched
 	}
 }
 
-func (s *Scheduler) Start() error {
+func (s *Scheduler) Start() (int, error) {
+  scheduleCount := 0
 	for _, plan := range s.Plans {
-		schedule, err := cron.ParseStandard(plan.Scheduler.Cron)
-		if err != nil {
-			return errors.Wrapf(err, "Invalid cron %v for plan %v", plan.Scheduler.Cron, plan.Name)
-		}
-		s.Cron.Schedule(schedule, backupJob{plan.Name, plan, s.Config, s.Stats, s.Cron})
+    job := backupJob{plan.Name, plan, s.Config, s.Stats, s.Cron}
+    if plan.Scheduler.Cron == "" {
+      job.Run()
+    } else {
+      schedule, err := cron.ParseStandard(plan.Scheduler.Cron)
+      if err != nil {
+        return 0, errors.Wrapf(err, "Invalid cron %v for plan %v", plan.Scheduler.Cron, plan.Name)
+      }
+      scheduleCount += 1
+      s.Cron.Schedule(schedule, job)
+      logrus.Infof("Scheduled %v", plan.Name)
+    }
 	}
+  if scheduleCount == 0 {
+    return 0, nil
+  }
 
 	// TODO: Shouldn't be here
 	//s.Cron.AddFunc("0 0 */1 * *", func() {
@@ -55,11 +66,11 @@ func (s *Scheduler) Start() error {
 		}
 	}
 
-	if err := s.Stats.Sync(stats); err != nil {
-		logrus.Errorf("Status store sync failed %v", err)
-	}
+	//if err := s.Stats.Sync(stats); err != nil {
+	//	logrus.Errorf("Status store sync failed %v", err)
+	//}
 
-	return nil
+	return scheduleCount, nil
 }
 
 type backupJob struct {

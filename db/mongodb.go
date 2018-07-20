@@ -3,11 +3,12 @@ package db
 import (
 	"fmt"
 	"github.com/jstoja/cnback/config"
+	"github.com/Sirupsen/logrus"
 	"io"
 	"os/exec"
 )
 
-func backupMongodb(config config.MongoDB) (io.ReadCloser, io.ReadCloser, error) {
+func backupMongodb(config config.MongoDB) (*exec.Cmd, io.ReadCloser, io.ReadCloser, error) {
 	args := fmt.Sprintf("--archive --gzip --host %v --port %v ", config.Host, config.Port)
 	if config.Database != "" {
 		args += fmt.Sprintf("--db %v ", config.Database)
@@ -19,17 +20,23 @@ func backupMongodb(config config.MongoDB) (io.ReadCloser, io.ReadCloser, error) 
 		args += fmt.Sprintf("%v", config.Params)
 	}
 
-	cmd := exec.Command("mongodump", args)
-	cmd.Start()
+  logrus.Infof("Goging to launch mongodump %v", args)
+	cmd := exec.Command("sh", "-c", "mongodump", args)
 
-	out2, err := cmd.StderrPipe()
+
+  out2, err := cmd.StderrPipe()
 	if err != nil {
-		return nil, out2, err
+		logrus.Warn(err)
+		return cmd, nil, out2, err
 	}
 	out1, err := cmd.StdoutPipe()
 	if err != nil {
-		return out1, out2, err
+		logrus.Warn(err)
+		return cmd, out1, out2, err
+	}
+	if err := cmd.Start(); err != nil {
+		logrus.Fatal(err)
 	}
 
-	return out1, out2, nil
+	return cmd, out1, out2, nil
 }

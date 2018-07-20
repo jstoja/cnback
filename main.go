@@ -11,12 +11,11 @@ import (
 	"github.com/jstoja/cnback/scheduler"
 )
 
-var version = "undefined"
+var version = "0.1.0"
 
 func main() {
 	var appConfig = &config.AppConfig{}
 	flag.StringVar(&appConfig.LogLevel, "LogLevel", "debug", "logging threshold level: debug|info|warn|error|fatal|panic")
-	flag.IntVar(&appConfig.Port, "Port", 8090, "HTTP port to listen on")
 	flag.StringVar(&appConfig.ConfigPath, "ConfigPath", "/config", "plan yml files dir")
 	flag.Parse()
 	setLogLevel(appConfig.LogLevel)
@@ -54,7 +53,13 @@ func main() {
 	//	logrus.Fatal(err)
 	//}
 	sch := scheduler.New(plans, appConfig, nil)
-	sch.Start()
+  scheduleCount, err := sch.Start()
+  if err != nil {
+    logrus.Errorf("Failed to launch a schedule: %v", err)
+  }
+  if scheduleCount == 0 {
+    return
+  }
 
 	//wait for SIGINT (Ctrl+C) or SIGTERM (docker stop)
 	sigChan := make(chan os.Signal, 1)

@@ -1,0 +1,12 @@
+scheduler:
+  timeout: 30
+  encryptKey: ""
+mongodb:
+  host: "localhost"
+  port: 27017
+  database: "test"
+  username: "admin"
+  password: "secret"
+local:
+  path: "/data"
+  retention: 14
